@@ -47,7 +47,7 @@ jobs:
               --document-name "AWS-RunShellScript" \
               --targets "Key=instanceids,Values=i-0f270cb598a238d0b,i-0a06db55112b967b2" \
               --comment "Pull Docker image and run it" \
-              --parameters 'commands=["aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ steps.login-aws-ecr.outputs.registry }}"]' \
+              --parameters 'commands=["aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin potato"]' \
               --query "Command.CommandId" --output text)
 
             aws ssm wait command-executed \
@@ -67,7 +67,7 @@ jobs:
 
 
 
-      
+# ${{ steps.login-aws-ecr.outputs.registry }}      
 
       
             
