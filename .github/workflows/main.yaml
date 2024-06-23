@@ -43,7 +43,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
       - name: Deploy to EC2
         run: |
-          command_id=(aws ssm send-command \
+          command_id=$(aws ssm send-command \
           --document-name "AWS-RunShellScript" \
           --targets "Key=instanceids,Values=i-0f270cb598a238d0b,i-0a06db55112b967b2" \
           --comment "Pull Docker image and run it" \
@@ -53,7 +53,7 @@ jobs:
 
           echo "$command_id"
 
-          aws ssm wait command-executed 
+          aws ssm wait command-executed \  
           --command-id $command_id \
           --instance-id i-0f270cb598a238d0b 
 
