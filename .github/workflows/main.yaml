@@ -49,7 +49,7 @@ jobs:
           --comment "Pull Docker image and run it" \
           --parameters 'commands=[
           "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ steps.login-aws-ecr.outputs.registry }}"
-          ]' --query "Command.CommandId" --output text) 
+          ] --query "Command.CommandId" --output text)' 
 
           echo "$command_id"
 
