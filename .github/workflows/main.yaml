@@ -52,7 +52,7 @@ jobs:
 
             aws ssm wait command-executed \
               --command-id $command_id \
-              --instance-id i-0f270cb598a238d0b
+              --instance-id i-0f270cb598a238d0b || true
 
             status=$(aws ssm list-commands --command-id $command_id --query "Commands[0].StatusDetails" --output text)
 
