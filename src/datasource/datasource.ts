@@ -8,8 +8,6 @@ const dataSource = new DataSource({
   port: 5432,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-    // username: 'postgres',
-    // password: 'password',
   database: 'postgres',
   logging: true,
   synchronize: false,
