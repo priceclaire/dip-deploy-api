@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from './datasource/typeorm.module';
 
 console.log(typeof process.env.DB_PASSWORD); // Should output 'string'
+console.log(process.env.DB_PASSWORD); // Should output your password if everything is configured correctly
 
 @Module({
   imports: [TodosModule, ConfigModule.forRoot(), TypeOrmModule],
