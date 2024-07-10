@@ -10,7 +10,7 @@ export class TodoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column()
   title: string;
 
   @Column()
