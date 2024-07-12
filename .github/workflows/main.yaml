@@ -6,6 +6,10 @@ on:
 jobs:
   build-api:
     name: Build API Docker Image
+    on:
+      push:
+        branches:
+          - frontend
     runs-on: ubuntu-latest  
     steps:  
         - name: Checkout
