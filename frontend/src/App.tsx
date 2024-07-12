@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Todo from "./Todo";
 import axios from "axios";
+import { host } from "./constants";
 
 export type TodoDTO = {
   id: number;
@@ -20,7 +21,8 @@ function App() {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:3000/todos").then((response) => {
+    console.log("HOST", host);
+    axios.get(`http://${host}/api/todos`).then((response) => {
       setTodos(response.data);
     });
   }, []);
@@ -39,7 +41,7 @@ function App() {
   };
 
   const addTodo = () => {
-    axios.post("http://localhost:3000/todos", newTodo).then((response) => {
+    axios.post(`http://${host}/api/todos`, newTodo).then((response) => {
       setTodos(response.data);
     });
   };
