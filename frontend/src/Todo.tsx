@@ -29,9 +29,17 @@ const Todo = ({ todo, updateTodos }: Props) => {
   const editTodo = (key: string, value: string | boolean) => {
     const updatedTodo = { ...todo, [key]: value };
     axios
-      .put(`http://${host}:3000/api/todos/todos/${todo.id}`, {
+      .put(`http://${host}/api/todos/todos/${todo.id}`, {
         todo: updatedTodo,
       })
+      .then((response) => {
+        updateTodos(response.data);
+      });
+  };
+
+  const deleteTodo = () => {
+    axios
+      .delete(`http://${host}/api/todos/${todo.id}`)
       .then((response) => {
         updateTodos(response.data);
       });
@@ -104,6 +112,11 @@ const Todo = ({ todo, updateTodos }: Props) => {
         }}
       >
         {complete ? "Mark Incomplete" : "Mark Complete"}
+      </button>
+      <button
+        onClick= {deleteTodo}
+      >
+        Delete
       </button>
     </div>
   );
