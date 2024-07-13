@@ -21,7 +21,6 @@ function App() {
   });
 
   useEffect(() => {
-    console.log("HOST", host);
     axios.get(`http://${host}/api/todos`).then((response) => {
       setTodos(response.data);
     });
