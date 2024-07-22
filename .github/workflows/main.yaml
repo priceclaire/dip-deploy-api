@@ -1,7 +1,7 @@
 name: Deploy
 on: 
   push: 
-    branches: [ "frontend" ]
+    branches: [ "eks" ]
   
 jobs:
   build-api:
@@ -50,109 +50,7 @@ jobs:
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./frontend
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-  deploy-api:
-    name: Deploy API to EC2
-    runs-on: ubuntu-latest
-    needs: build-api
-    steps:
-        - name: Configure AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
-        - name: Log into AWS ECR
-          id: login-aws-ecr
-          uses: aws-actions/amazon-ecr-login@v2
-        - name: Pull and Run Docker Image From ECR
-          run: |
-            command_id=$(aws ssm send-command \
-              --document-name "AWS-RunShellScript" \
-              --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID_1 }},${{ secrets.INSTANCE_ID_2 }}" \
-              --comment "Pull Docker image and run it" \
-              --parameters 'commands=[
-                "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ steps.login-aws-ecr.outputs.registry }}",
-                "docker stop ${{ vars.API_CONTAINER_NAME }} || true",
-                "docker pull ${{ steps.login-aws-ecr.outputs.registry }}/${{ secrets.API_IMAGE_REPO }}:latest",
-                "docker run --rm -d -p 3000:3000 -e DB_HOST=${{ secrets.DB_HOST }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e ENVIRONMENT=production --name ${{ vars.API_CONTAINER_NAME }} ${{ steps.login-aws-ecr.outputs.registry }}/${{ secrets.API_IMAGE_REPO }}:latest"
-              ]' \
-              --query "Command.CommandId" --output text)
-
-            echo "command_id=$command_id" >> $GITHUB_ENV
-        - name: Wait For Docker Commands To Complete on Instance 1
-          run: |
-            echo ${{ env.command_id }}
-            aws ssm wait command-executed \
-              --command-id ${{ env.command_id }} \
-              --instance-id ${{ secrets.INSTANCE_ID_1 }} || true
-        - name: Wait For Docker Commands To Complete on Instance 2
-          run: |
-            echo ${{ env.command_id }}
-            aws ssm wait command-executed \
-              --command-id ${{ env.command_id }} \
-              --instance-id ${{ secrets.INSTANCE_ID_2 }} || true
-        - name: Check Command Status
-          run: |
-            status=$(aws ssm list-commands --command-id ${{ env.command_id }} --query "Commands[0].StatusDetails" --output text)
-
-            if [ $status == "Success" ]; then
-              echo "Your api is up and running"
-            else
-              echo "Command failed...time to panic!"
-              exit 1
-            fi
-  deploy-frontend:
-    name: Deploy Frontend to EC2
-    runs-on: ubuntu-latest
-    needs: build-frontend
-    steps:
-        - name: Configure AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
-        - name: Log into AWS ECR
-          id: login-aws-ecr
-          uses: aws-actions/amazon-ecr-login@v2
-        - name: Pull and Run Docker Image From ECR
-          run: |
-            command_id=$(aws ssm send-command \
-              --document-name "AWS-RunShellScript" \
-              --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID_1 }},${{ secrets.INSTANCE_ID_2 }}" \
-              --comment "Pull Docker image and run it" \
-              --parameters 'commands=[
-                "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ steps.login-aws-ecr.outputs.registry }}",
-                "docker stop ${{ vars.FRONTEND_CONTAINER_NAME }} || true",
-                "docker pull ${{ steps.login-aws-ecr.outputs.registry }}/${{ secrets.FRONTEND_IMAGE_REPO }}:latest",
-                "docker run --rm -d -p 80:80 --name ${{ vars.FRONTEND_CONTAINER_NAME }} ${{ steps.login-aws-ecr.outputs.registry }}/${{ secrets.FRONTEND_IMAGE_REPO }}:latest"
-              ]' \
-              --query "Command.CommandId" --output text)
-
-            echo "command_id=$command_id" >> $GITHUB_ENV
-        - name: Wait For Docker Commands To Complete on Instance 1
-          run: |
-            echo ${{ env.command_id }}
-            aws ssm wait command-executed \
-              --command-id ${{ env.command_id }} \
-              --instance-id ${{ secrets.INSTANCE_ID_1 }} || true
-        - name: Wait For Docker Commands To Complete on Instance 2
-          run: |
-            echo ${{ env.command_id }}
-            aws ssm wait command-executed \
-              --command-id ${{ env.command_id }} \
-              --instance-id ${{ secrets.INSTANCE_ID_2 }} || true
-        - name: Check Command Status
-          run: |
-            status=$(aws ssm list-commands --command-id ${{ env.command_id }} --query "Commands[0].StatusDetails" --output text)
-
-            if [ $status == "Success" ]; then
-              echo "Your frontend is up and running"
-            else
-              echo "Command failed...time to panic!"
-              exit 1
-            fi
-
+ 
 
 
 
