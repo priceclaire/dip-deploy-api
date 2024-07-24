@@ -3,6 +3,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { Request, Response, NextFunction } from 'express';
 
 // async function bootstrap() {
 //   const app = await NestFactory.create(AppModule, { cors: true });
@@ -29,6 +30,24 @@ async function bootstrap() {
   };
 
   app.enableCors(corsOptions);
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
+      res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
+      res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
+      res.sendStatus(corsOptions.optionsSuccessStatus);
+    } else {
+      next();
+    }
+  });
+
+
+
+
+
+
+
   app.setGlobalPrefix('api');
   await app.listen(3000);
 }
