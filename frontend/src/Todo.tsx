@@ -29,7 +29,7 @@ const Todo = ({ todo, updateTodos }: Props) => {
   const editTodo = (key: string, value: string | boolean) => {
     const updatedTodo = { ...todo, [key]: value };
     axios
-      .put(`http://${host}/api/todos/todos/${todo.id}`, {
+      .put(`https://${host}/api/todos/todos/${todo.id}`, {
         todo: updatedTodo,
       })
       .then((response) => {
@@ -39,7 +39,7 @@ const Todo = ({ todo, updateTodos }: Props) => {
 
   const deleteTodo = () => {
     axios
-      .delete(`http://${host}/api/todos/${todo.id}`)
+      .delete(`https://${host}/api/todos/${todo.id}`)
       .then((response) => {
         updateTodos(response.data);
       });
