@@ -14,10 +14,18 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // const corsOptions: CorsOptions = {
+  //   origin: 'https://a609d02dff06146d48da289f58aef09b-1914571526.eu-north-1.elb.amazonaws.com',
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  //   allowedHeaders: ['Content-Type', 'Authorization'],
+  // };
+
   const corsOptions: CorsOptions = {
-    origin: 'https://a609d02dff06146d48da289f58aef09b-1914571526.eu-north-1.elb.amazonaws.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'https://a609d02dff06146d48da289f58aef09b-1914571526.eu-north-1.elb.amazonaws.com', // Replace with your allowed origin(s)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    optionsSuccessStatus: 204, // Some legacy browsers (IE11, various SmartTVs) choke on 204
   };
 
   app.enableCors(corsOptions);
