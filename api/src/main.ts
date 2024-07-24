@@ -32,16 +32,16 @@ async function bootstrap() {
 
   app.enableCors(corsOptions);
 
-  // app.use((req: Request, res: Response, next: NextFunction) => {
-  //   if (req.method === 'OPTIONS') {
-  //     res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
-  //     res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
-  //     res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
-  //     res.sendStatus(corsOptions.optionsSuccessStatus);
-  //   } else {
-  //     next();
-  //   }
-  // });
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
+      res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
+      res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
+      res.sendStatus(corsOptions.optionsSuccessStatus);
+    } else {
+      next();
+    }
+  });
 
 
 
