@@ -24,23 +24,24 @@ async function bootstrap() {
   const corsOptions: CorsOptions = {
     origin: 'https://a609d02dff06146d48da289f58aef09b-1914571526.eu-north-1.elb.amazonaws.com', // Replace with your allowed origin(s)
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: 'Content-Type, Accept',
     credentials: true,
-    optionsSuccessStatus: 204, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 204, 
+    preflightContinue: false,
   };
 
   app.enableCors(corsOptions);
 
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.method === 'OPTIONS') {
-      res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
-      res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
-      res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
-      res.sendStatus(corsOptions.optionsSuccessStatus);
-    } else {
-      next();
-    }
-  });
+  // app.use((req: Request, res: Response, next: NextFunction) => {
+  //   if (req.method === 'OPTIONS') {
+  //     res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
+  //     res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
+  //     res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
+  //     res.sendStatus(corsOptions.optionsSuccessStatus);
+  //   } else {
+  //     next();
+  //   }
+  // });
 
 
 
