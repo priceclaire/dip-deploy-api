@@ -37,6 +37,7 @@ async function bootstrap() {
       res.header('Access-Control-Allow-Origin', corsOptions.origin as string);
       res.header('Access-Control-Allow-Methods', Array.isArray(corsOptions.methods) ? corsOptions.methods.join(',') : corsOptions.methods);
       res.header('Access-Control-Allow-Headers', Array.isArray(corsOptions.allowedHeaders) ? corsOptions.allowedHeaders.join(',') : corsOptions.allowedHeaders);
+      res.header('Access-Control-Allow-Private-Network', 'true');
       res.sendStatus(corsOptions.optionsSuccessStatus);
     } else {
       next();
