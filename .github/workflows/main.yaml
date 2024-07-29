@@ -82,15 +82,15 @@ jobs:
           aws eks update-kubeconfig --name ${{secrets.K8S_CLUSTER_NAME}} --region ${{secrets.AWS_REGION}} 
       - name: Install/Update Helm Chart
         run: |
-          helm upgrade --install todo-app ./todo --set database.host= --set database.username=${{secrets.DB_USERNAME}} --set database.password=${{secrets.DB_PASSWORD}} --set api.image.repository=${{secrets.API_IMAGE_URI}} --set frontend.image.repository=${{secrets.FRONTEND_IMAGE_URI}} --set api.image.tag=${{ github.sha }} --set frontend.image.tag=${{ github.sha }} 
+          helm upgrade --install todo-app ./todo --set database.host=${{secrets.DB_HOST}} --set database.username=${{secrets.DB_USERNAME}} --set database.password=${{secrets.DB_PASSWORD}} --set api.image.repository=${{secrets.API_IMAGE_URI}} --set frontend.image.repository=${{secrets.FRONTEND_IMAGE_URI}} --set api.image.tag=${{ github.sha }} --set frontend.image.tag=${{ github.sha }} 
+      - name: Fail deployment
+        run: |
+          echo "Intentionally failing the deployment..."
+          exit 1    
       - name: Notify on failure
         if: failure()
         run: |
           echo "Deployment failed!"
-      - name: Rollback to Previous Version
-        if: failure()
-        run: |
-          helm rollback todo-app 0
 
 
     
