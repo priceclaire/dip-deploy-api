@@ -87,6 +87,10 @@ jobs:
         if: failure()
         run: |
           echo "Deployment failed!"
+      - name: Rollback to Previous Version
+        if: failure()
+        run: |
+          helm rollback todo-app 0
 
 
     
