@@ -83,6 +83,11 @@ jobs:
       - name: Install/Update Helm Chart
         run: |
           helm upgrade --install todo-app ./todo --set database.host=${{secrets.DB_HOST}} --set database.username=${{secrets.DB_USERNAME}} --set database.password=${{secrets.DB_PASSWORD}} --set api.image.repository=${{secrets.API_IMAGE_URI}} --set frontend.image.repository=${{secrets.FRONTEND_IMAGE_URI}} --set api.image.tag=${{ github.sha }} --set frontend.image.tag=${{ github.sha }} 
+      - name: Notify on failure
+      if: failure()
+      run: |
+        echo "Deployment failed!"
+
 
     
 

@@ -1,0 +1,20 @@
+name: Rollback
+on:
+  workflow_run:
+    workflows: ["Deploy"]
+    types:
+      - completed
+
+jobs:
+  rollback:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.workflow_run.head_commit.before }}
+    - name: Rollback application
+      run: |
+        echo "Rolling back to previous stable commit..."
+        ./deploy.sh --commit $GITHUB_SHA --rollback
